@@ -1,0 +1,10 @@
+actionID: 1006
+type: ButtonPositive
+defaultValueKeyboard: 103
+defaultValueMouse: -1
+defaultValueGamepad: -1
+group: Combat
+priority: 106
+visible: true
+visibleForMKB: true
+visibleForGamepad: false

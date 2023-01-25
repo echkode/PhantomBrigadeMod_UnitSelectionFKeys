@@ -1,0 +1,12 @@
+id: com.echkode.pbmods.unitselectionfkeys
+ver: 1
+includesConfigOverrides: true
+includesConfigEdits: false
+includesLibraries: true
+includesTextures: false
+includesLocalizationEdits: true
+includesLocalizations: false
+gameVersionMin:
+gameVersionMax:
+name: Unit Selection Function Keys
+desc: Select units using the function keys
