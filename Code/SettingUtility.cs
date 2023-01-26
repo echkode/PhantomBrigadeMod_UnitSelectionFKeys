@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 
 using System.Collections.Generic;
+using System.Linq;
 
 using HarmonyLib;
 
@@ -107,9 +108,8 @@ namespace EchKode.PBMods.UnitSelectionFKeys
 					inputActions.Count);
 			}
 
-			// Force language loading to bring in the names of the extra input actions.
 			// Rewired requires that each action be uniquely named.
-			PBSettingUtility.ApplyOption("game_language", true);
+			InjectActionNames();
 
 			var found = false;
 			var data = DataMultiLinker<DataContainerInputAction>.data;
@@ -167,6 +167,74 @@ namespace EchKode.PBMods.UnitSelectionFKeys
 				ModLink.modIndex,
 				ModLink.modId,
 				inputActions.Count);
+		}
+
+		private static bool InjectActionNames()
+		{
+			var sectorKey = ModLink.Settings.languageSector;
+			if (string.IsNullOrEmpty(sectorKey))
+			{
+				Debug.LogWarningFormat(
+					"Mod {0} ({1}) settings should contain a text library sector key in the languageSector attribute",
+					ModLink.modIndex,
+					ModLink.modId);
+				return false;
+			}
+
+			var library = DataManagerText.libraryData;
+			if (!library.sectors.ContainsKey(sectorKey))
+			{
+				Debug.LogWarningFormat(
+					"Mod {0} ({1}) sector should already exist in text library | sector: {2}",
+					ModLink.modIndex,
+					ModLink.modId,
+					sectorKey);
+				return false;
+			}
+
+			var entries = ModLink.Settings.labelTextEntries;
+			if (entries == null || entries.Count == 0)
+			{
+				Debug.LogWarningFormat(
+					"Mod {0} ({1}) settings should contain a list of action name/label entries",
+					ModLink.modIndex,
+					ModLink.modId,
+					sectorKey);
+				return false;
+			}
+
+			var sector = library.sectors[sectorKey];
+			Debug.LogFormat(
+				"Mod {0} ({1}) injecting entries into text library for action names/labels | sector: {2} | entries ({3}):\n  {4}",
+				ModLink.modIndex,
+				ModLink.modId,
+				sectorKey,
+				entries.Count,
+				string.Join("\n  ", entries.Select(kvp => $"{kvp.Key}: {kvp.Value}")));
+			foreach (var entry in entries)
+			{
+				if (string.IsNullOrWhiteSpace(entry.Value))
+				{
+					Debug.LogWarningFormat(
+						"Mod {0} ({1}) text for entry should not be empty | key: {2}",
+						ModLink.modIndex,
+						ModLink.modId,
+						entry.Key);
+					continue;
+				}
+
+				if (sector.entries.ContainsKey(entry.Key))
+				{
+					continue;
+				}
+				sector.entries[entry.Key] = new DataBlockTextEntryMain()
+				{
+					text = entry.Value,
+					textProcessed = entry.Value,
+				};
+			}
+
+			return true;
 		}
 
 		private static void RefreshPlayerForInputHelper()

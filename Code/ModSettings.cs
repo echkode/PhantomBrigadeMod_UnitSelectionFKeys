@@ -1,6 +1,11 @@
 ﻿// Copyright (c) 2023 EchKode
 // SPDX-License-Identifier: BSD-3-Clause
 
+using System.Collections.Generic;
+using System.IO;
+
+using UnityEngine;
+
 namespace EchKode.PBMods.UnitSelectionFKeys
 {
 	partial class ModLink
@@ -8,7 +13,9 @@ namespace EchKode.PBMods.UnitSelectionFKeys
 		internal sealed class ModSettings
 		{
 #pragma warning disable CS0649
-			internal bool enableLogging;
+			public bool enableLogging;
+			public string languageSector;
+			public Dictionary<string, string> labelTextEntries;
 #pragma warning restore CS0649
 		}
 
@@ -16,10 +23,20 @@ namespace EchKode.PBMods.UnitSelectionFKeys
 
 		internal static void LoadSettings()
 		{
-			Settings = UtilitiesYAML.LoadDataFromFile<ModSettings>(modPath, "settings.yaml", false, false);
+			var settingsPath = Path.Combine(modPath, "settings.yaml");
+			Settings = UtilitiesYAML.ReadFromFile<ModSettings>(settingsPath, false);
 			if (Settings == null)
 			{
-				Settings = new ModSettings();
+				Settings = new ModSettings()
+				{
+					labelTextEntries = new Dictionary<string, string>(),
+				};
+
+				Debug.LogWarningFormat(
+					"Mod {0} ({1}) unable to load settings | path: {2}",
+					modIndex,
+					modId,
+					settingsPath);
 			}
 		}
 	}

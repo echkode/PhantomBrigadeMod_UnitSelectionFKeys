@@ -1,4 +1,5 @@
-edits:
+languageSector: ui_setting_input_action
+labelTextEntries:
   combat_unit1_name: Select Unit 1
   combat_unit2_name: Select Unit 2
   combat_unit3_name: Select Unit 3

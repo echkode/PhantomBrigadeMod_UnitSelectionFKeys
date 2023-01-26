@@ -4,7 +4,7 @@ includesConfigOverrides: true
 includesConfigEdits: false
 includesLibraries: true
 includesTextures: false
-includesLocalizationEdits: true
+includesLocalizationEdits: false
 includesLocalizations: false
 gameVersionMin:
 gameVersionMax:
