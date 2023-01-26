@@ -89,10 +89,6 @@ namespace EchKode.PBMods.UnitSelectionFKeys
 
 		private static void SelectUnit(int selectIndex)
 		{
-			if (!CombatUIUtility.IsCombatUISafe())
-			{
-				return;
-			}
 			if (!OverworldUtility.IsFeatureUnlocked("feature_combat_unit_selection"))
 			{
 				if (ModLink.Settings.enableLogging)
@@ -106,6 +102,34 @@ namespace EchKode.PBMods.UnitSelectionFKeys
 			}
 
 			var combat = Contexts.sharedInstance.combat;
+			if (!CombatUIUtility.IsCombatUISafe())
+			{
+				if (!combat.Simulating)
+				{
+					return;
+				}
+				if (!Contexts.sharedInstance.persistent.isCombatInProgress)
+				{
+					return;
+				}
+				if (!Contexts.sharedInstance.input.hasCombatUIMode)
+				{
+					return;
+				}
+				if (combat.simulationTimeScale.f != 0f)
+				{
+					return;
+				}
+				if ((ModLink.Settings.capabilities & ModLink.ModSettings.UnitSelectionCapability.AllowWhenSimulationPaused)
+					!= ModLink.ModSettings.UnitSelectionCapability.AllowWhenSimulationPaused)
+				{
+					// Allow unit selection in combat simulation only when paused.
+					// This is an experimental feature. The camera takes a number of seconds to respond
+					// so it doesn't look like it's working at first.
+					return;
+				}
+			}
+
 			if (!combat.Simulating)
 			{
 				var e = Contexts.sharedInstance.input.combatUIMode.e;

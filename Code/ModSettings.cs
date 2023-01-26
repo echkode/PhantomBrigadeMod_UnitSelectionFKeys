@@ -12,8 +12,16 @@ namespace EchKode.PBMods.UnitSelectionFKeys
 	{
 		internal sealed class ModSettings
 		{
+			[System.Flags]
+			internal enum UnitSelectionCapability
+			{
+				Standard = 0,
+				AllowWhenSimulationPaused = 1,
+			}
+
 #pragma warning disable CS0649
 			public bool enableLogging;
+			public UnitSelectionCapability capabilities;
 			public string languageSector;
 			public Dictionary<string, string> labelTextEntries;
 #pragma warning restore CS0649
