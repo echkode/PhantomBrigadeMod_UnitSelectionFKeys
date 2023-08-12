@@ -1,5 +1,7 @@
 # UnitSelectionFKeys
 
+**This mod is obsolete.** The game has been patched by the publisher so this is no longer a problem.
+
 A library mod for [Phantom Brigade (Alpha)](https://braceyourselfgames.com/phantom-brigade/) that brings back using the function keys F1-F8 to select units in combat. It skips disabled/destroyed units so it matches the unit tab display. If there are more than 8 units in combat, you'll have to use the tab key or the mouse to select units 9 and above.
 
 It is compatible with game patch **0.23.1-b5426**. That is an **EXPERIMENTAL** release. All library mods are fragile and susceptible to breakage whenever a new version is released.
@@ -8,7 +10,7 @@ I've packaged up a ready-to-use mod as a release. Just download and extract to y
 
 The keys can be remapped. Here's a screenshot of the new key remapping screen that ships with patch 0.23.1-b5426 showing the extra unit selection actions added by this mod and their default assignment to the function keys.
 
-![Key remapping screen with new unit selection actions](Screenshots/Key_Remapping_Screen.jpg)
+![Key remapping screen with new unit selection actions](Screenshots/Target_and_Weapon_Info_Popups.jpg)
 
 ## Localization
 
