@@ -158,7 +158,9 @@ namespace EchKode.PBMods.UnitSelectionFKeys
 			ReInput.Reset();
 
 			RefreshPlayerForInputHelper();
-			RefreshPlayerForGameCursorSystem();
+			RefreshPlayerForGameObject<GameCameraSystem>();
+			RefreshPlayerForGameObject<GameCursorSystem>();
+			RefreshPlayerForCIViews();
 
 			mungedReInput = true;
 
@@ -245,12 +247,25 @@ namespace EchKode.PBMods.UnitSelectionFKeys
 
 		}
 
-		private static void RefreshPlayerForGameCursorSystem()
+		private static void RefreshPlayerForCIViews()
 		{
 			foreach (var rgo in SceneManager.GetActiveScene().GetRootGameObjects())
 			{
-				var gcs = rgo.GetComponentInChildren<GameCursorSystem>();
-				if (gcs == null)
+				var c = rgo.GetComponentInChildren<CIView>();
+				if (c == null)
+				{
+					continue;
+				}
+				c.player = InputHelper.player;
+			}
+		}
+
+		private static void RefreshPlayerForGameObject<T>()
+		{
+			foreach (var rgo in SceneManager.GetActiveScene().GetRootGameObjects())
+			{
+				var c = rgo.GetComponentInChildren<T>();
+				if (c == null)
 				{
 					continue;
 				}
@@ -258,13 +273,14 @@ namespace EchKode.PBMods.UnitSelectionFKeys
 				if (ModLink.Settings.enableLogging)
 				{
 					Debug.LogFormat(
-						"Mod {0} ({1}) found GameCursorSystem component | game object: {2}",
+						"Mod {0} ({1}) found {2} component | game object: {2}",
 						ModLink.modIndex,
 						ModLink.modId,
+						typeof(T).Name,
 						rgo.name);
 				}
 
-				var t = Traverse.Create(gcs);
+				var t = Traverse.Create(c);
 				var playerID = t.Field<int>("playerID").Value;
 				var player = ReInput.players.GetPlayer(playerID);
 				t.Field<Player>("player").Value = player;
@@ -273,9 +289,10 @@ namespace EchKode.PBMods.UnitSelectionFKeys
 			}
 
 			Debug.LogWarningFormat(
-				"Mod {0} ({1}) didn't find a game object with GameCursorSystem component",
+				"Mod {0} ({1}) didn't find a game object with {2} component",
 				ModLink.modIndex,
-				ModLink.modId);
+				ModLink.modId,
+				typeof(T).Name);
 		}
 
 		private static void DumpRewiredUserDataActions()
